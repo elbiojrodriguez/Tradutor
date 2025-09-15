@@ -8,8 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const recordingTimer = document.getElementById('recordingTimer');
     const sendButton = document.getElementById('sendButton');
     const apiStatus = document.getElementById('apiStatus');
-    const permissionRequest = document.getElementById('permissionRequest');
-    const permissionButton = document.getElementById('permissionButton');
     const speakerButton = document.getElementById('speakerButton');
     const stopSpeechButton = document.getElementById('stopSpeechButton');
     
@@ -21,16 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const SpeechSynthesis = window.speechSynthesis;
     
     if (!SpeechRecognition) {
-        originalText.textContent = "Seu navegador não suporta reconhecimento de voz. Tente usar Chrome ou Edge.";
+        originalText.textContent = "Navegador não compatível com reconhecimento de voz.";
         recordButton.style.display = 'none';
-        apiStatus.textContent = "Navegador não compatível com reconhecimento de voz";
-        permissionRequest.style.display = 'none';
+        apiStatus.textContent = "Use Chrome ou Edge para melhor experiência";
         return;
     }
     
     if (!SpeechSynthesis) {
         speakerButton.style.display = 'none';
-        apiStatus.textContent += " | Navegador não compatível com leitura de texto";
     }
     
     const recognition = new SpeechRecognition();
@@ -43,12 +39,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let recordingStartTime = 0;
     let timerInterval = null;
     let pressTimer;
-    let microphonePermissionGranted = false;
     let tapMode = false; // false = modo pressionar, true = modo toque
     let isSpeechPlaying = false;
     
-    // Solicitar permissão do microfone
-    permissionButton.addEventListener('click', requestMicrophonePermission);
+    // Solicitar permissão do microfone automaticamente
+    requestMicrophonePermission();
     
     // Eventos para o botão de áudio
     speakerButton.addEventListener('click', toggleSpeech);
@@ -60,20 +55,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // Parar as tracks imediatamente após obter a permissão
             stream.getTracks().forEach(track => track.stop());
             
-            microphonePermissionGranted = true;
-            permissionRequest.style.display = 'none';
             recordButton.disabled = false;
             originalText.textContent = "Toque e segure o botão para falar";
-            apiStatus.textContent = "Permissão concedida. Conectando com a API...";
+            apiStatus.textContent = "Microfone autorizado. Conectando...";
             
             // Testar a conexão com a API
             testApiConnection();
         } catch (error) {
             console.error('Erro ao acessar o microfone:', error);
-            permissionRequest.innerHTML = `
-                <p>Permissão do microfone negada. Por favor, permita o acesso ao microfone nas configurações do seu navegador.</p>
-                <button class="permission-btn" onclick="window.location.reload()">Tentar novamente</button>
-            `;
+            originalText.textContent = "Permissão do microfone necessária. Recarregue a página e autorize o microfone.";
+            recordButton.disabled = true;
         }
     }
     
@@ -88,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const result = await response.json();
-            apiStatus.textContent = "Tradução concluída com sucesso";
+            apiStatus.textContent = "Tradução concluída";
             
             // Habilitar o botão de áudio após a tradução
             if (SpeechSynthesis) {
@@ -98,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return result.translatedText || text;
         } catch (error) {
             console.error('Erro na tradução:', error);
-            apiStatus.textContent = "Erro na tradução. Verifique o console para detalhes.";
-            return "Erro na tradução. Verifique o console para detalhes.";
+            apiStatus.textContent = "Erro na tradução";
+            return "Erro na tradução. Tente novamente.";
         }
     }
     
@@ -116,22 +107,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         utterance.onstart = function() {
             isSpeechPlaying = true;
-            speakerButton.classList.add('active');
-            speakerButton.textContent = '🔊';
+            speakerButton.textContent = '⏹';
             stopSpeechButton.style.display = 'block';
         };
         
         utterance.onend = function() {
             isSpeechPlaying = false;
-            speakerButton.classList.remove('active');
+            speakerButton.textContent = '🔊';
             stopSpeechButton.style.display = 'none';
         };
         
         utterance.onerror = function() {
             isSpeechPlaying = false;
-            speakerButton.classList.remove('active');
+            speakerButton.textContent = '🔊';
             stopSpeechButton.style.display = 'none';
-            apiStatus.textContent = "Erro na reprodução de áudio";
+            apiStatus.textContent = "Erro na reprodução";
         };
         
         window.speechSynthesis.speak(utterance);
@@ -142,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (SpeechSynthesis) {
             window.speechSynthesis.cancel();
             isSpeechPlaying = false;
-            speakerButton.classList.remove('active');
+            speakerButton.textContent = '🔊';
             stopSpeechButton.style.display = 'none';
         }
     }
@@ -155,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
             stopSpeech();
         } else {
             const textToSpeak = translatedText.textContent;
-            if (textToSpeak && textToSpeak !== "A tradução aparecerá aqui" && 
+            if (textToSpeak && textToSpeak !== "Tradução aparecerá aqui" && 
                 textToSpeak !== "Traduzindo..." && !textToSpeak.startsWith("Erro")) {
                 speakText(textToSpeak);
             }
@@ -165,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Testar conexão com a API
     async function testApiConnection() {
         try {
-            apiStatus.textContent = "Testando conexão com a API...";
+            apiStatus.textContent = "Conectando à API...";
             const response = await fetch(TRANSLATE_ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -173,20 +163,20 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             if (response.ok) {
-                apiStatus.textContent = "Conectado à API de tradução";
+                apiStatus.textContent = "Conectado";
             } else {
-                apiStatus.textContent = "Erro na conexão com a API";
+                apiStatus.textContent = "API indisponível";
             }
         } catch (error) {
             console.error('Erro ao conectar com a API:', error);
-            apiStatus.textContent = "Erro ao conectar com a API";
+            apiStatus.textContent = "Erro de conexão";
         }
     }
     
     // Eventos de toque para o botão de gravação
     recordButton.addEventListener('touchstart', function(e) {
         e.preventDefault();
-        if (!microphonePermissionGranted) return;
+        if (recordButton.disabled) return;
         
         // Se não está gravando, inicia a gravação após um breve delay
         if (!isRecording) {
@@ -288,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
     recognition.onerror = function(event) {
         console.error('Erro no reconhecimento de voz:', event.error);
         
-        // Si for erro de "no-speech", apenas ignore
+        // Se for erro de "no-speech", apenas ignore
         if (event.error !== 'no-speech') {
             originalText.textContent = "Erro: " + event.error;
         }
@@ -314,20 +304,4 @@ document.addEventListener('DOMContentLoaded', function() {
         const seconds = elapsedSeconds % 60;
         recordingTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
-    
-    // Verificar se já temos permissão do microfone
-    navigator.mediaDevices.enumerateDevices()
-        .then(devices => {
-            const hasMicrophone = devices.some(device => device.kind === 'audioinput' && device.label !== '');
-            if (hasMicrophone) {
-                microphonePermissionGranted = true;
-                permissionRequest.style.display = 'none';
-                recordButton.disabled = false;
-                originalText.textContent = "Toque e segure o botão para falar";
-                testApiConnection();
-            }
-        })
-        .catch(err => {
-            console.error('Erro ao verificar dispositivos:', err);
-        });
 });
