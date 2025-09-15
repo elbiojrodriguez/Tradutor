@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const recordButton = document.getElementById('recordButton');
     const originalText = document.getElementById('originalText');
     const translatedText = document.getElementById('translatedText');
+    const recordingModal = document.getElementById('recordingModal');
+    const recordingTimer = document.getElementById('recordingTimer');
+    const sendButton = document.getElementById('sendButton');
     const speakerButton = document.getElementById('speakerButton');
     
     // ENDPOINT da API de tradução
@@ -29,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Variáveis de estado
     let isRecording = false;
+    let recordingStartTime = 0;
+    let timerInterval = null;
     let pressTimer;
     let tapMode = false; // false = modo pressionar, true = modo toque
     let isSpeechPlaying = false;
@@ -153,8 +158,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Toque rápido - ativa o modo toque
             tapMode = true;
             startRecording();
+            showRecordingModal();
         }
     });
+    
+    // Evento para o botão de enviar no modal
+    sendButton.addEventListener('click', stopRecording);
     
     // Prevenir scroll durante o toque no botão
     recordButton.addEventListener('touchstart', function(e) {
@@ -166,6 +175,11 @@ document.addEventListener('DOMContentLoaded', function() {
             recognition.start();
             isRecording = true;
             recordButton.classList.add('recording');
+            recordingStartTime = Date.now();
+            
+            // Iniciar temporizador
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
             
             originalText.textContent = "Ouvindo...";
             translatedText.textContent = "Aguardando para traduzir...";
@@ -184,6 +198,10 @@ document.addEventListener('DOMContentLoaded', function() {
         recognition.stop();
         isRecording = false;
         recordButton.classList.remove('recording');
+        clearInterval(timerInterval);
+        
+        // Esconder modal se estiver visível
+        hideRecordingModal();
     }
     
     recognition.onresult = function(event) {
@@ -226,4 +244,19 @@ document.addEventListener('DOMContentLoaded', function() {
     recognition.onend = function() {
         stopRecording();
     };
+    
+    function showRecordingModal() {
+        recordingModal.classList.add('visible');
+    }
+    
+    function hideRecordingModal() {
+        recordingModal.classList.remove('visible');
+    }
+    
+    function updateTimer() {
+        const elapsedSeconds = Math.floor((Date.now() - recordingStartTime) / 1000);
+        const minutes = Math.floor(elapsedSeconds / 60);
+        const seconds = elapsedSeconds % 60;
+        recordingTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
 });
