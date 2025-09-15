@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lemur Tradutor - Mobile</title>
+    <title>Lemur Tradutor</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,40 +12,29 @@
             <h1>Lemur Tradutor</h1>
         </div>
         
-        <p class="subtitle">Traduza do Português para o Inglês em tempo real</p>
+        <div class="translation-box">
+            <div class="text-display">
+                <h3>Português</h3>
+                <div id="originalText" class="text-content">Aguardando áudio...</div>
+            </div>
+            
+            <div class="text-display">
+                <h3>
+                    Inglês 
+                    <button class="speaker-btn" id="speakerButton" title="Ouvir tradução" disabled>🔊</button>
+                </h3>
+                <div id="translatedText" class="text-content">Tradução aparecerá aqui</div>
+                <button class="stop-speech-btn" id="stopSpeechButton">Parar áudio</button>
+            </div>
+        </div>
         
-        <div class="translation-section">
-            <h2>Tradução por Voz</h2>
-            
-            <div id="permissionRequest" class="permission-request">
-                <p>Para usar o tradutor de voz, precisamos da permissão do microfone.</p>
-                <button class="permission-btn" id="permissionButton">Conceder permissão</button>
-            </div>
-            
-            <div class="translation-box">
-                <div class="text-display">
-                    <h3>Texto em Português</h3>
-                    <div id="originalText" class="text-content">Aguardando permissão do microfone...</div>
-                </div>
-                
-                <div class="text-display">
-                    <h3>
-                        Tradução em Inglês 
-                        <button class="speaker-btn" id="speakerButton" title="Ouvir tradução" disabled>🔊</button>
-                    </h3>
-                    <div id="translatedText" class="text-content">A tradução aparecerá aqui</div>
-                    <button class="stop-speech-btn" id="stopSpeechButton">Parar áudio</button>
-                </div>
-            </div>
-            
-            <div class="controls">
-                <button class="record-btn" id="recordButton" disabled>🎤</button>
-                <p class="btn-label" id="instructionText">Toque e segure para falar, ou toque uma vez para gravar e toque novamente para parar</p>
-            </div>
-            
-            <div class="api-status" id="apiStatus">
-                Conectando com a API de tradução...
-            </div>
+        <div class="controls">
+            <button class="record-btn" id="recordButton">🎤</button>
+            <p class="btn-label" id="instructionText">Toque e segure para falar, ou toque uma vez para gravar e toque novamente para parar</p>
+        </div>
+        
+        <div class="api-status" id="apiStatus">
+            Conectando...
         </div>
     </div>
     
