@@ -85,10 +85,80 @@ body {
     animation: pulse 1.5s infinite;
 }
 
+/* Modal de gravação */
+.recording-modal {
+    position: fixed;
+    bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: bottom 0.5s ease;
+    z-index: 1000;
+}
+
+.recording-modal.visible {
+    bottom: 100px;
+}
+
+.recording-indicator {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.recording-dot {
+    width: 12px;
+    height: 12px;
+    background: #e74c3c;
+    border-radius: 50%;
+    margin-right: 10px;
+    animation: blink 1s infinite;
+}
+
+.recording-text {
+    color: white;
+    font-size: 16px;
+}
+
+.recording-timer {
+    color: white;
+    font-size: 14px;
+    margin-left: auto;
+}
+
+.send-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #25D366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+/* Animações */
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
 }
 
 @media (max-width: 600px) {
@@ -99,5 +169,10 @@ body {
     .record-btn {
         width: 55px;
         height: 55px;
+    }
+    
+    .recording-modal {
+        width: 90%;
+        max-width: 300px;
     }
 }
