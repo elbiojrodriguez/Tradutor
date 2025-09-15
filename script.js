@@ -1,15 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos DOM
     const recordButton = document.getElementById('recordButton');
-    const instructionText = document.getElementById('instructionText');
     const originalText = document.getElementById('originalText');
     const translatedText = document.getElementById('translatedText');
-    const recordingModal = document.getElementById('recordingModal');
-    const recordingTimer = document.getElementById('recordingTimer');
-    const sendButton = document.getElementById('sendButton');
-    const apiStatus = document.getElementById('apiStatus');
     const speakerButton = document.getElementById('speakerButton');
-    const stopSpeechButton = document.getElementById('stopSpeechButton');
     
     // ENDPOINT da API de tradução
     const TRANSLATE_ENDPOINT = 'https://chat-tradutor.onrender.com/translate';
@@ -21,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!SpeechRecognition) {
         originalText.textContent = "Navegador não compatível com reconhecimento de voz.";
         recordButton.style.display = 'none';
-        apiStatus.textContent = "Use Chrome ou Edge para melhor experiência";
         return;
     }
     
@@ -36,8 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Variáveis de estado
     let isRecording = false;
-    let recordingStartTime = 0;
-    let timerInterval = null;
     let pressTimer;
     let tapMode = false; // false = modo pressionar, true = modo toque
     let isSpeechPlaying = false;
@@ -47,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Eventos para o botão de áudio
     speakerButton.addEventListener('click', toggleSpeech);
-    stopSpeechButton.addEventListener('click', stopSpeech);
     
     async function requestMicrophonePermission() {
         try {
@@ -57,10 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             recordButton.disabled = false;
             originalText.textContent = "Toque e segure o botão para falar";
-            apiStatus.textContent = "Microfone autorizado. Conectando...";
-            
-            // Testar a conexão com a API
-            testApiConnection();
         } catch (error) {
             console.error('Erro ao acessar o microfone:', error);
             originalText.textContent = "Permissão do microfone necessária. Recarregue a página e autorize o microfone.";
@@ -71,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função de tradução usando sua API
     async function translateText(text, targetLang = 'en') {
         try {
-            apiStatus.textContent = "Traduzindo...";
             const response = await fetch(TRANSLATE_ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -79,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const result = await response.json();
-            apiStatus.textContent = "Tradução concluída";
             
             // Habilitar o botão de áudio após a tradução
             if (SpeechSynthesis) {
@@ -89,7 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return result.translatedText || text;
         } catch (error) {
             console.error('Erro na tradução:', error);
-            apiStatus.textContent = "Erro na tradução";
             return "Erro na tradução. Tente novamente.";
         }
     }
@@ -108,33 +91,19 @@ document.addEventListener('DOMContentLoaded', function() {
         utterance.onstart = function() {
             isSpeechPlaying = true;
             speakerButton.textContent = '⏹';
-            stopSpeechButton.style.display = 'block';
         };
         
         utterance.onend = function() {
             isSpeechPlaying = false;
             speakerButton.textContent = '🔊';
-            stopSpeechButton.style.display = 'none';
         };
         
         utterance.onerror = function() {
             isSpeechPlaying = false;
             speakerButton.textContent = '🔊';
-            stopSpeechButton.style.display = 'none';
-            apiStatus.textContent = "Erro na reprodução";
         };
         
         window.speechSynthesis.speak(utterance);
-    }
-    
-    // Função para parar a fala
-    function stopSpeech() {
-        if (SpeechSynthesis) {
-            window.speechSynthesis.cancel();
-            isSpeechPlaying = false;
-            speakerButton.textContent = '🔊';
-            stopSpeechButton.style.display = 'none';
-        }
     }
     
     // Alternar entre reproduzir e parar a fala
@@ -142,34 +111,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!SpeechSynthesis) return;
         
         if (isSpeechPlaying) {
-            stopSpeech();
+            window.speechSynthesis.cancel();
+            isSpeechPlaying = false;
+            speakerButton.textContent = '🔊';
         } else {
             const textToSpeak = translatedText.textContent;
             if (textToSpeak && textToSpeak !== "Tradução aparecerá aqui" && 
                 textToSpeak !== "Traduzindo..." && !textToSpeak.startsWith("Erro")) {
                 speakText(textToSpeak);
             }
-        }
-    }
-    
-    // Testar conexão com a API
-    async function testApiConnection() {
-        try {
-            apiStatus.textContent = "Conectando à API...";
-            const response = await fetch(TRANSLATE_ENDPOINT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: "teste", targetLang: 'en' })
-            });
-            
-            if (response.ok) {
-                apiStatus.textContent = "Conectado";
-            } else {
-                apiStatus.textContent = "API indisponível";
-            }
-        } catch (error) {
-            console.error('Erro ao conectar com a API:', error);
-            apiStatus.textContent = "Erro de conexão";
         }
     }
     
@@ -203,12 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Toque rápido - ativa o modo toque
             tapMode = true;
             startRecording();
-            showRecordingModal();
         }
     });
-    
-    // Evento para o botão de enviar no modal
-    sendButton.addEventListener('click', stopRecording);
     
     // Prevenir scroll durante o toque no botão
     recordButton.addEventListener('touchstart', function(e) {
@@ -220,11 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
             recognition.start();
             isRecording = true;
             recordButton.classList.add('recording');
-            recordingStartTime = Date.now();
-            
-            // Iniciar temporizador
-            updateTimer();
-            timerInterval = setInterval(updateTimer, 1000);
             
             originalText.textContent = "Ouvindo...";
             translatedText.textContent = "Aguardando para traduzir...";
@@ -243,10 +184,6 @@ document.addEventListener('DOMContentLoaded', function() {
         recognition.stop();
         isRecording = false;
         recordButton.classList.remove('recording');
-        clearInterval(timerInterval);
-        
-        // Esconder modal se estiver visível
-        hideRecordingModal();
     }
     
     recognition.onresult = function(event) {
@@ -289,19 +226,4 @@ document.addEventListener('DOMContentLoaded', function() {
     recognition.onend = function() {
         stopRecording();
     };
-    
-    function showRecordingModal() {
-        recordingModal.classList.add('visible');
-    }
-    
-    function hideRecordingModal() {
-        recordingModal.classList.remove('visible');
-    }
-    
-    function updateTimer() {
-        const elapsedSeconds = Math.floor((Date.now() - recordingStartTime) / 1000);
-        const minutes = Math.floor(elapsedSeconds / 60);
-        const seconds = elapsedSeconds % 60;
-        recordingTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }
 });
