@@ -8,20 +8,36 @@
 </head>
 <body>
     <div class="box-principal">
-        <div class="text-display">
-            <div class="text-title">Português</div>
-            <div id="originalText" class="text-content">Aguardando áudio...</div>
-        </div>
-        
-        <div class="text-display">
-            <div class="text-title">
-                Inglês 
-                <button class="speaker-btn" id="speakerButton" title="Ouvir tradução" disabled>🔊</button>
+        <!-- Caixa de Texto (Bloco Independente) -->
+        <div class="text-box">
+            <div class="text-display">
+                <div class="text-title">
+                    Tradução
+                    <button class="speaker-btn" id="speakerButton" title="Ouvir tradução" disabled>🔊</button>
+                </div>
+                <div id="translatedText" class="text-content">Toque no microfone para começar</div>
             </div>
-            <div id="translatedText" class="text-content">Tradução aparecerá aqui</div>
         </div>
         
-        <button class="record-btn" id="recordButton">🎤</button>
+        <!-- Caixa do Microfone (Bloco Independente) -->
+        <div class="microphone-box">
+            <div class="language-selector">
+                <div class="language-flag" id="currentLanguageFlag">🇧🇷</div>
+                <button class="world-btn" id="worldButton">🌎</button>
+            </div>
+            
+            <div class="language-dropdown" id="languageDropdown">
+                <div class="language-option" data-lang="pt-BR">🇧🇷 Português</div>
+                <div class="language-option" data-lang="en">🇺🇸 Inglês</div>
+                <div class="language-option" data-lang="es">🇪🇸 Espanhol</div>
+                <div class="language-option" data-lang="fr">🇫🇷 Francês</div>
+                <div class="language-option" data-lang="de">🇩🇪 Alemão</div>
+                <div class="language-option" data-lang="it">🇮🇹 Italiano</div>
+                <div class="language-option" data-lang="ja">🇯🇵 Japonês</div>
+            </div>
+            
+            <button class="record-btn" id="recordButton">🎤</button>
+        </div>
     </div>
 
     <!-- Modal de gravação -->
