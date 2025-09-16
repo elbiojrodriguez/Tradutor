@@ -128,23 +128,23 @@ body {
   background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Dropdown de idiomas */
+/* Dropdown de idiomas - SEMPRE NO CENTRO */
 .language-dropdown {
-  position: absolute;
-  top: -220px;
+  position: fixed;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 250px;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 280px;
   background: white;
   border-radius: 12px;
-  padding: 1.5vh;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  padding: 2vh;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   z-index: 1000;
   display: none;
   flex-direction: column;
-  gap: 1vh;
-  max-height: 200px;
+  gap: 1.5vh;
+  max-height: 60vh;
   overflow-y: auto;
 }
 
