@@ -4,7 +4,6 @@ html {
   font-size: clamp(14px, 2.5vw, 18px);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
-  transition: background-color 0.5s;
 }
 
 body {
@@ -30,18 +29,26 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   gap: 3vh;
 }
 
-/* ===== COMPONENTES DO TRADUTOR ===== */
+/* ===== CAIXA DE TEXTO ===== */
+.text-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 200px;
+}
+
 .text-display {
   border: 1px solid #8ecae6;
   border-radius: 12px;
   padding: 2vh 3vw;
   background: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  min-height: 30vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -58,7 +65,7 @@ body {
 
 .text-content {
   color: #333;
-  font-size: 1rem;
+  font-size: 2rem;
   line-height: 1.6;
   flex-grow: 1;
   display: flex;
@@ -66,6 +73,7 @@ body {
   justify-content: center;
   text-align: center;
   padding: 1vh 0;
+  min-height: 60px;
 }
 
 .speaker-btn {
@@ -81,23 +89,22 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s;
 }
 
 .speaker-btn:hover {
   background-color: rgba(18, 103, 130, 0.1);
 }
 
-/* Container do microfone e bandeira */
-.microphone-container {
+/* ===== CAIXA DO MICROFONE ===== */
+.microphone-box {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1vh;
   position: relative;
+  padding: 1vh 0;
 }
 
-/* Seletor de idioma */
 .language-selector {
   display: flex;
   align-items: center;
@@ -121,14 +128,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s;
 }
 
 .world-btn:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Dropdown de idiomas - versão ultra compacta */
+/* Dropdown de idiomas */
 .language-dropdown {
   position: fixed;
   top: 50%;
@@ -136,15 +142,15 @@ body {
   transform: translate(-50%, -50%);
   background: white;
   border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   display: none;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
-  max-width: 220px;
+  gap: 12px;
+  max-width: 300px;
 }
 
 .language-dropdown.show {
@@ -152,9 +158,9 @@ body {
 }
 
 .language-option {
-  font-size: 2rem;
-  width: 40px;
-  height: 40px;
+  font-size: 2.5rem;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -164,7 +170,8 @@ body {
 }
 
 .language-option:hover {
-  background-color: #e6f7ff;
+  transform: scale(1.1);
+  background-color: #f0f8ff;
 }
 
 .record-btn {
@@ -177,7 +184,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 2rem;
   cursor: pointer;
   border: none;
   color: white;
@@ -208,7 +215,7 @@ body {
   flex-direction: column;
   align-items: center;
   transition: bottom 0.5s ease;
-  z-index: 1001; /* Mais alto que o dropdown */
+  z-index: 1001;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -296,11 +303,6 @@ body {
   .language-flag {
     font-size: 1.8rem;
   }
-  
-  .language-dropdown {
-    top: -180px;
-    max-height: 160px;
-  }
 }
 
 /* Ajustes para orientação paisagem */
@@ -313,13 +315,12 @@ body {
     padding-top: 2vh;
   }
   
-  .text-display {
+  .text-box {
     width: 70%;
     min-height: 30vh;
   }
   
-  .microphone-container {
-    order: 3;
+  .microphone-box {
     width: 25%;
   }
   
@@ -329,9 +330,6 @@ body {
   }
   
   .language-dropdown {
-    top: -200px;
-    left: 0;
-    transform: translateX(0);
-    width: 200px;
+    top: 40%;
   }
 }
