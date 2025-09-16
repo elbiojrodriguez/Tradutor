@@ -123,57 +123,68 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Solicitar permissão do microfone automaticamente ao carregar a página
     requestMicrophonePermission();
-    
     // ===== FUNÇÕES DE SELEÇÃO DE IDIOMA =====
-    
-    // Alternar a exibição do dropdown de idiomas
-    worldButton.addEventListener('click', function(e) {
-        e.stopPropagation();
-        languageDropdown.classList.toggle('show');
-    });
-    
-    // Fechar dropdown ao clicar fora dele
-    document.addEventListener('click', function(e) {
-        if (!languageDropdown.contains(e.target) && e.target !== worldButton) {
-            languageDropdown.classList.remove('show');
-        }
-    });
-    
-    // Selecionar um novo idioma
-    languageOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            const novoIdioma = this.getAttribute('data-lang');
-            alterarIdiomaOrigem(novoIdioma);
-            languageDropdown.classList.remove('show');
-        });
-    });
-    
-    // Função para alterar o idioma de origem
-    function alterarIdiomaOrigem(novoIdioma) {
-        IDIOMA_ORIGEM = novoIdioma;
-        
-        // Atualizar a bandeira exibida
-        currentLanguageFlag.textContent = BANDEIRAS_IDIOMAS[IDIOMA_ORIGEM] || '🎤';
-        
-        // Reiniciar o reconhecimento de voz com o novo idioma
-        if (isRecording) {
-            recognition.stop();
-        }
-        
-        recognition = new SpeechRecognition();
-        recognition.lang = IDIOMA_ORIGEM;
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        
-        // Reconfigurar eventos
-        reconfigurarEventosReconhecimento();
-        
-        // Feedback visual
-        translatedText.textContent = `Idioma alterado para ${NOMES_IDIOMAS[IDIOMA_ORIGEM] || IDIOMA_ORIGEM}`;
-        setTimeout(() => {
-            translatedText.textContent = TEXTOS.toque_para_comecar;
-        }, 2000);
+
+// Alternar a exibição do dropdown de idiomas
+worldButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Ícone do mundo clicado'); // Para debug
+    languageDropdown.classList.toggle('show');
+});
+
+// Fechar dropdown ao clicar fora dele
+document.addEventListener('click', function(e) {
+    if (languageDropdown.classList.contains('show') && 
+        !languageDropdown.contains(e.target) && 
+        e.target !== worldButton) {
+        console.log('Fechando dropdown'); // Para debug
+        languageDropdown.classList.remove('show');
     }
+});
+
+// Prevenir que cliques dentro do dropdown fechem ele
+languageDropdown.addEventListener('click', function(e) {
+    e.stopPropagation();
+});
+
+// Selecionar um novo idioma
+languageOptions.forEach(option => {
+    option.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const novoIdioma = this.getAttribute('data-lang');
+        console.log('Idioma selecionado:', novoIdioma); // Para debug
+        alterarIdiomaOrigem(novoIdioma);
+        languageDropdown.classList.remove('show');
+    });
+});
+
+// Função para alterar o idioma de origem
+function alterarIdiomaOrigem(novoIdioma) {
+    IDIOMA_ORIGEM = novoIdioma;
+    
+    // Atualizar a bandeira exibida
+    currentLanguageFlag.textContent = BANDEIRAS_IDIOMAS[IDIOMA_ORIGEM] || '🎤';
+    
+    // Reiniciar o reconhecimento de voz com o novo idioma
+    if (isRecording) {
+        recognition.stop();
+    }
+    
+    recognition = new SpeechRecognition();
+    recognition.lang = IDIOMA_ORIGEM;
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    
+    // Reconfigurar eventos
+    reconfigurarEventosReconhecimento();
+    
+    // Feedback visual
+    translatedText.textContent = `Idioma alterado para ${NOMES_IDIOMAS[IDIOMA_ORIGEM] || IDIOMA_ORIGEM}`;
+    setTimeout(() => {
+        translatedText.textContent = TEXTOS.toque_para_comecar;
+    }, 2000);
+}
     
     // Reconfigurar eventos do reconhecimento de voz
     function reconfigurarEventosReconhecimento() {
