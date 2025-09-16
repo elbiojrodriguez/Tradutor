@@ -208,7 +208,7 @@ body {
   flex-direction: column;
   align-items: center;
   transition: bottom 0.5s ease;
-  z-index: 1008;
+  z-index: 1001; /* Mais alto que o dropdown */
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
