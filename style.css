@@ -30,18 +30,26 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   gap: 3vh;
 }
 
-/* ===== COMPONENTES DO TRADUTOR ===== */
+/* ===== CAIXA DE TEXTO (BLOCO INDEPENDENTE) ===== */
+.text-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 200px;
+}
+
 .text-display {
   border: 1px solid #8ecae6;
   border-radius: 12px;
   padding: 2vh 3vw;
   background: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  min-height: 20vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -64,7 +72,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: left;
+  text-align: center;
   padding: 1vh 0;
 }
 
@@ -88,6 +96,86 @@ body {
   background-color: rgba(18, 103, 130, 0.1);
 }
 
+/* ===== CAIXA DO MICROFONE (BLOCO INDEPENDENTE) ===== */
+.microphone-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vh;
+  position: relative;
+  padding: 1vh 0;
+}
+
+/* Seletor de idioma */
+.language-selector {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  margin-bottom: 1vh;
+}
+
+.language-flag {
+  font-size: 2rem;
+}
+
+.world-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5vh;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.world-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Dropdown de idiomas */
+.language-dropdown {
+  position: absolute;
+  top: -220px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 250px;
+  background: white;
+  border-radius: 12px;
+  padding: 1.5vh;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  display: none;
+  flex-direction: column;
+  gap: 1vh;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.language-dropdown.show {
+  display: flex;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 2vw;
+  padding: 1.5vh 2vw;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+}
+
+.language-option:hover {
+  background-color: #e6f7ff;
+}
+
 .record-btn {
   width: 20vw;
   height: 20vw;
@@ -102,8 +190,6 @@ body {
   cursor: pointer;
   border: none;
   color: white;
-  align-self: center;
-  margin-top: 1vh;
   transition: transform 0.2s, background-color 0.3s;
 }
 
@@ -202,6 +288,49 @@ body {
   100% { opacity: 1; }
 }
 
+/* ===== LAYOUT ALTERNATIVOS ===== */
+
+/* Layout horizontal (lado a lado) */
+.layout-horizontal {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 2vw;
+}
+
+.layout-horizontal .text-box {
+  flex: 2;
+  margin-right: 2vw;
+}
+
+.layout-horizontal .microphone-box {
+  flex: 1;
+}
+
+/* Layout com microfone acima */
+.layout-microphone-top {
+  flex-direction: column-reverse !important;
+}
+
+/* Layout com texto menor */
+.text-box-compact .text-display {
+  min-height: 150px;
+  padding: 1.5vh 2vw;
+}
+
+/* Layout com microfone maior */
+.microphone-box-large {
+  gap: 2vh;
+  padding: 2vh 0;
+}
+
+.microphone-box-large .record-btn {
+  width: 25vw;
+  height: 25vw;
+  max-width: 100px;
+  max-height: 100px;
+  font-size: 2.2rem;
+}
+
 /* Ajustes para telas muito pequenas */
 @media (max-height: 600px) {
   .box-principal {
@@ -212,8 +341,17 @@ body {
   }
   
   .text-display {
-    min-height: 15vh;
+    min-height: 25vh;
     padding: 1.5vh 3vw;
+  }
+  
+  .language-flag {
+    font-size: 1.8rem;
+  }
+  
+  .language-dropdown {
+    top: -180px;
+    max-height: 160px;
   }
 }
 
@@ -227,15 +365,24 @@ body {
     padding-top: 2vh;
   }
   
-  .text-display {
-    width: 45%;
-    min-height: 25vh;
+  .text-box {
+    width: 70%;
+    min-height: 30vh;
+  }
+  
+  .microphone-box {
+    width: 25%;
   }
   
   .record-btn {
-    order: 3;
     width: 15vh;
     height: 15vh;
-    margin-top: 2vh;
+  }
+  
+  .language-dropdown {
+    top: -200px;
+    left: 0;
+    transform: translateX(0);
+    width: 200px;
   }
 }
