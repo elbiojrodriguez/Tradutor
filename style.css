@@ -128,7 +128,7 @@ body {
   background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Dropdown de idiomas - layout em grid */
+/* Dropdown de idiomas - versão ultra compacta */
 .language-dropdown {
   position: fixed;
   top: 50%;
@@ -136,25 +136,35 @@ body {
   transform: translate(-50%, -50%);
   background: white;
   border-radius: 16px;
-  padding: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   display: none;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  max-width: 200px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 220px;
+}
+
+.language-dropdown.show {
+  display: flex;
 }
 
 .language-option {
   font-size: 2rem;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   border-radius: 50%;
   transition: all 0.2s ease;
+}
+
+.language-option:hover {
+  background-color: #e6f7ff;
 }
 
 .record-btn {
