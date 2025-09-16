@@ -8,19 +8,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mapeamento de idiomas para bandeiras
     const BANDEIRAS_IDIOMAS = {
         'pt-BR': '🇧🇷',     // Português Brasileiro
-        'pt-PT': '🇵🇹',     // Português de Portugal
         'en': '🇺🇸',        // Inglês (EUA)
-        'en-GB': '🇬🇧',     // Inglês Britânico
         'es': '🇪🇸',        // Espanhol
         'fr': '🇫🇷',        // Francês
         'de': '🇩🇪',        // Alemão
         'it': '🇮🇹',        // Italiano
-        'ja': '🇯🇵',        // Japonês
-        'zh-CN': '🇨🇳',     // Chinês Simplificado
-        'ru': '🇷🇺',        // Russo
-        'ar': '🇸🇦',        // Árabe
-        'hi': '🇮🇳',        // Hindi
-        'ko': '🇰🇷'         // Coreano
+        'ja': '🇯🇵'         // Japonês
     };
     
     // Nomes dos idiomas para exibição
@@ -31,12 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'fr': 'Francês',
         'de': 'Alemão',
         'it': 'Italiano',
-        'ja': 'Japonês',
-        'zh-CN': 'Chinês',
-        'ru': 'Russo',
-        'ar': 'Árabe',
-        'hi': 'Hindi',
-        'ko': 'Coreano'
+        'ja': 'Japonês'
     };
     
     // Textos exibidos na interface
@@ -49,7 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
             permissao_microfone: "Permissão do microfone necessária. Recarregue a página e autorize o microfone.",
             erro_acesso_microfone: "Erro ao acessar o microfone",
             erro_traducao: "Erro na tradução. Tente novamente.",
-            gravando: "Gravando"
+            gravando: "Gravando",
+            aguardando_permissao: "Aguardando permissão do microfone..."
         },
         en: {
             titulo_traducao: "Translation",
@@ -59,7 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
             permissao_microfone: "Microphone permission required. Reload the page and authorize the microphone.",
             erro_acesso_microfone: "Error accessing microphone",
             erro_traducao: "Translation error. Try again.",
-            gravando: "Recording"
+            gravando: "Recording",
+            aguardando_permissao: "Waiting for microphone permission..."
         },
         es: {
             titulo_traducao: "Traducción",
@@ -69,7 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
             permissao_microfone: "Permiso de micrófono necesario. Recargue la página y autorice el micrófono.",
             erro_acesso_microfone: "Error al acceder al micrófono",
             erro_traducao: "Error de traducción. Inténtalo de nuevo.",
-            gravando: "Grabando"
+            gravando: "Grabando",
+            aguardando_permissao: "Esperando permiso del micrófono..."
         }
     };
     
@@ -85,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const recordingText = document.querySelector('.recording-text');
     const sendButton = document.getElementById('sendButton');
     const speakerButton = document.getElementById('speakerButton');
-    const titleTraducao = document.querySelector('.text-title');
     const currentLanguageFlag = document.getElementById('currentLanguageFlag');
     const worldButton = document.getElementById('worldButton');
     const languageDropdown = document.getElementById('languageDropdown');
@@ -95,8 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
     currentLanguageFlag.textContent = BANDEIRAS_IDIOMAS[IDIOMA_ORIGEM] || '🎤';
     
     // Atualizar textos da interface
-    titleTraducao.querySelector('span').textContent = TEXTOS.titulo_traducao;
-    translatedText.textContent = TEXTOS.toque_para_comecar;
+    translatedText.textContent = TEXTOS.aguardando_permissao;
     recordingText.textContent = TEXTOS.gravando;
     
     // ENDPOINT da API de tradução
@@ -128,6 +117,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let pressTimer;
     let tapMode = false; // false = modo pressionar, true = modo toque
     let isSpeechPlaying = false;
+    let microphonePermissionGranted = false;
+    
+    // ===== INICIALIZAÇÃO =====
+    
+    // Solicitar permissão do microfone automaticamente ao carregar a página
+    requestMicrophonePermission();
     
     // ===== FUNÇÕES DE SELEÇÃO DE IDIOMA =====
     
@@ -161,7 +156,10 @@ document.addEventListener('DOMContentLoaded', function() {
         currentLanguageFlag.textContent = BANDEIRAS_IDIOMAS[IDIOMA_ORIGEM] || '🎤';
         
         // Reiniciar o reconhecimento de voz com o novo idioma
-        recognition.stop();
+        if (isRecording) {
+            recognition.stop();
+        }
+        
         recognition = new SpeechRecognition();
         recognition.lang = IDIOMA_ORIGEM;
         recognition.continuous = true;
@@ -186,20 +184,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ===== FUNÇÕES PRINCIPAIS =====
     
-    // Solicitar permissão do microfone automaticamente
-    requestMicrophonePermission();
-    
-    // Eventos para o botão de áudio
-    speakerButton.addEventListener('click', toggleSpeech);
-    
+    // Solicitar permissão do microfone
     async function requestMicrophonePermission() {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             // Parar as tracks imediatamente após obter a permissão
             stream.getTracks().forEach(track => track.stop());
             
+            microphonePermissionGranted = true;
             recordButton.disabled = false;
             translatedText.textContent = TEXTOS.toque_para_comecar;
+            
+            // Configurar eventos do reconhecimento de voz
+            reconfigurarEventosReconhecimento();
+            
         } catch (error) {
             console.error('Erro ao acessar o microfone:', error);
             translatedText.textContent = TEXTOS.permissao_microfone;
@@ -277,10 +275,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Eventos para o botão de áudio
+    speakerButton.addEventListener('click', toggleSpeech);
+    
     // Eventos de toque para o botão de gravação
     recordButton.addEventListener('touchstart', function(e) {
         e.preventDefault();
-        if (recordButton.disabled) return;
+        if (recordButton.disabled || !microphonePermissionGranted) return;
         
         // Se não está gravando, inicia a gravação após um breve delay
         if (!isRecording) {
@@ -305,9 +306,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else {
             // Toque rápido - ativa o modo toque
-            tapMode = true;
-            startRecording();
-            showRecordingModal();
+            if (microphonePermissionGranted) {
+                tapMode = true;
+                startRecording();
+                showRecordingModal();
+            }
         }
     });
     
