@@ -8,19 +8,15 @@
 </head>
 <body>
     <div class="box-principal">
-        <!-- Caixa de Texto (Bloco Independente) -->
-        <div class="text-box">
-            <div class="text-display">
-                <div class="text-title">
-                    Tradução
-                    <button class="speaker-btn" id="speakerButton" title="Ouvir tradução" disabled>🔊</button>
-                </div>
-                <div id="translatedText" class="text-content">Toque no microfone para começar</div>
+        <div class="text-display">
+            <div class="text-title">
+                Tradução
+                <button class="speaker-btn" id="speakerButton" title="Ouvir tradução" disabled>🔊</button>
             </div>
+            <div id="translatedText" class="text-content">Toque no microfone para começar</div>
         </div>
         
-        <!-- Caixa do Microfone (Bloco Independente) -->
-        <div class="microphone-box">
+        <div class="microphone-container">
             <div class="language-selector">
                 <div class="language-flag" id="currentLanguageFlag">🇧🇷</div>
                 <button class="world-btn" id="worldButton">🌎</button>
