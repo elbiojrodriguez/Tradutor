@@ -123,7 +123,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Solicitar permissão do microfone automaticamente ao carregar a página
     requestMicrophonePermission();
-    // ===== FUNÇÕES DE SELEÇÃO DE IDIOMA =====
+    
+   // ===== FUNÇÕES DE SELEÇÃO DE IDIOMA =====
 
 // Alternar a exibição do dropdown de idiomas
 worldButton.addEventListener('click', function(e) {
