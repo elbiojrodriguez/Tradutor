@@ -4,6 +4,7 @@ html {
   font-size: clamp(14px, 2.5vw, 18px);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
+  transition: background-color 0.5s;
 }
 
 body {
@@ -11,10 +12,6 @@ body {
   margin: 0;
   padding: 0;
   font-size: 1em;
-  background-color: #f5f5f5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .box-principal {
@@ -27,31 +24,33 @@ body {
   background-color: #aee2ff;
   position: relative;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 3vh;
 }
+
+
 
 /* ===== CAIXA DE TEXTO ===== */
-.text-box {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 200px;
-}
+
 
 .text-display {
+  position: absolute; /* 👈 permite mover livremente */
+  top: 60vh;           /* 👈 distância do topo */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 35%;
+  max-width: 400px;
+  height: auto;
+  width: 80%;
+  min-height: 15vh;
+  background: white;
   border: 1px solid #8ecae6;
   border-radius: 12px;
   padding: 2vh 3vw;
-  background: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  flex: 1;
   display: flex;
   flex-direction: column;
+  z-index: 10;
 }
+
 
 .text-title {
   color: #126782;
@@ -96,13 +95,15 @@ body {
 }
 
 /* ===== CAIXA DO MICROFONE ===== */
+
 .microphone-box {
-  display: flex;
+  position: absolute; /* 👈 permite mover livremente */
+  top: 32vh;          /* 👈 distância do topo */
+  left: 72vw;         /* 👈 distância da esquerda */
   flex-direction: column;
   align-items: center;
   gap: 1vh;
-  position: relative;
-  padding: 1vh 0;
+  z-index: 9;
 }
 
 .language-selector {
@@ -119,7 +120,7 @@ body {
 .world-btn {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 2rem;
   cursor: pointer;
   padding: 0.5vh;
   border-radius: 50%;
