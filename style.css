@@ -51,11 +51,10 @@ body {
   z-index: 10;
 }
 
-
 .text-title {
   color: #126782;
-  font-size: 0.9rem;
-  margin-bottom: 1.5vh;
+  font-size: 1rem;
+  margin-bottom: .5vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -64,7 +63,7 @@ body {
 
 .text-content {
   color: #333;
-  font-size: 2rem;
+  font-size: 1rem;
   line-height: 1.6;
   flex-grow: 1;
   display: flex;
@@ -118,6 +117,7 @@ body {
 }
 
 .world-btn {
+  position: relative;
   background: none;
   border: none;
   font-size: 2rem;
@@ -136,22 +136,23 @@ body {
 }
 
 /* Dropdown de idiomas */
+
 .language-dropdown {
-  position: fixed;
-  top: 50%;
+  position: absolute; /* 👈 relativo ao ícone do mundinho */
+  bottom: 100%;        /* 👈 aparece acima do botão */
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   background: white;
   border-radius: 12px;
-  padding: 10px;
+  padding: 4px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   z-index: 9999;
   display: none;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
-  max-width: 220px;
+  flex-direction: column; /* 👈 agora em coluna */
+  align-items: center;
+  gap: 2px;
+  width: auto;
+  min-width: 20px;
 }
 
 .language-dropdown.show {
@@ -159,9 +160,9 @@ body {
 }
 
 .language-option {
-   font-size: 1.5rem;
-  width: 35px;
-  height: 35px;
+  font-size: 1.2rem;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,6 +170,7 @@ body {
   border-radius: 50%;
   transition: all 0.2s ease;
 }
+
 
 .language-option:hover {
   transform: scale(1.1);
