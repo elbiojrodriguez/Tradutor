@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // ===== CONFIGURAÇÃO =====
-    let IDIOMA_ORIGEM = 'pt-BR';
+    let IDIOMA_ORIGEM = 'es-ES';
     const IDIOMA_DESTINO = 'en';
     const IDIOMA_FALA = 'en-US';
     
