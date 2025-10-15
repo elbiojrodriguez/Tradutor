@@ -1,55 +1,26 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tradutor por Voz</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+<html>
 <body>
-    <div class="box-principal">
-        <!-- Caixa de Texto -->
-              <div class="text-box">
-                   <div class="text-display">
-                <div class="text-title">
-                    🌐
-                    <button class="speaker-btn" id="speakerButton" disabled>🔊</button>
-                </div>
-                <div id="translatedText" class="text-content">🎤</div>
-            </div>
-        </div>
+    <script>
+        const tokenTeste = 'fRNpBDu9TSqukUmW8MV8VO:APA91bGfK4g8qEmWjvVzZDyEaIEI9jywhUsKH4UufbC_5lXze4Sn3icT_a1eWlKLBRlUihJv-R17E4cAhuI6GtiBFK9fgLkV-10kGqg_6LcDNDu';
+        const startTime = Date.now();
         
-        <!-- Caixa do Microfone -->
-        <div class="microphone-box">
-            <div class="language-selector">
-                <div class="language-flag" id="currentLanguageFlag">🇧🇷</div>
-                <button class="world-btn" id="worldButton">🌎</button>
-            </div>
-            
-            <div class="language-dropdown" id="languageDropdown">
-                <div class="language-option" data-lang="pt-BR">🇧🇷</div>
-                <div class="language-option" data-lang="en">🇺🇸</div>
-                <div class="language-option" data-lang="es">🇪🇸</div>
-                <div class="language-option" data-lang="fr">🇫🇷</div>
-                <div class="language-option" data-lang="de">🇩🇪</div>
-                <div class="language-option" data-lang="it">🇮🇹</div>
-                <div class="language-option" data-lang="ja">🇯🇵</div>
-            </div>
-            
-            <button class="record-btn" id="recordButton" disabled>🎤</button>
-        </div>
-    </div>
-
-    <!-- Modal de gravação -->
-    <div class="recording-modal" id="recordingModal">
-        <div class="recording-indicator">
-            <div class="recording-dot"></div>
-            <div class="recording-text">●</div>
-            <div class="recording-timer" id="recordingTimer">0:00</div>
-        </div>
-        <button class="send-button" id="sendButton">▶</button>
-    </div>
-
-    <script src="script.js"></script>
+        fetch('https://serve-app-e9ia.onrender.com/send-notification', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                token: tokenTeste,
+                title: 'TESTE SERVIDOR ORIGINAL',
+                body: 'Este deve funcionar!'
+            })
+        })
+        .then(r => r.json())
+        .then(result => {
+            const tempo = Date.now() - startTime;
+            console.log('✅ SERVIDOR ORIGINAL:', {tempo: tempo + 'ms', resultado: result});
+            document.body.innerHTML = `<h1>Original: ${tempo}ms - ${JSON.stringify(result)}</h1>`;
+        })
+        .catch(console.error);
+    </script>
 </body>
 </html>
